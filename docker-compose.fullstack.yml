@@ -1,0 +1,75 @@
+version: '3.8'
+
+# Full Stack Docker Hub deployment - Single container with all services
+# Replace 'your-dockerhub-username' with your actual Docker Hub username
+
+services:
+  # All-in-one Full Stack Application
+  fullstack:
+    image: your-dockerhub-username/docker-swarm-stack-fullstack:latest
+    environment:
+      # If using external databases, provide connection URLs
+      # POSTGRES_URL: "postgresql://postgres:postgres@external-postgres:5432/postgres"
+      # SQLSERVER_URL: "mssql+pyodbc://sa:YourStrong@Passw0rd@external-sqlserver:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+      
+      # For standalone mode (using embedded/in-memory databases)
+      POSTGRES_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+      SQLSERVER_URL: "mssql+pyodbc://sa:YourStrong@Passw0rd@localhost:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    ports:
+      - "80:80"        # Main application (nginx proxy)
+      - "3000:3000"    # Direct frontend access
+      - "8000:8000"    # Direct backend API access
+    volumes:
+      # Optional: Mount volumes for data persistence
+      - fullstack_data:/app/data
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/health && curl -f http://localhost/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: External PostgreSQL (comment out if using embedded)
+  # postgresql:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+  # Optional: External SQL Server (comment out if using embedded)
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   environment:
+  #     SA_PASSWORD: "YourStrong@Passw0rd"
+  #     ACCEPT_EULA: "Y"
+  #     MSSQL_PID: "Express"
+  #   volumes:
+  #     - sqlserver_data:/var/opt/mssql
+  #   ports:
+  #     - "1433:1433"
+
+volumes:
+  fullstack_data:
+    driver: local
+  # postgres_data:
+  #   driver: local
+  # sqlserver_data:
+  #   driver: local

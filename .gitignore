@@ -1,0 +1,276 @@
+# ===========================
+# Docker Swarm Stack Project
+# Enhanced .gitignore file
+# ===========================
+
+# ===========================
+# Node.js / Next.js Frontend
+# ===========================
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Next.js specific
+.next/cache/
+.next/server/
+.next/static/
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# TypeScript
+*.tsbuildinfo
+.tsbuildinfo
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# ===========================
+# Python / FastAPI Backend
+# ===========================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# ===========================
+# Environment Variables
+# ===========================
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===========================
+# IDE and Editor Files
+# ===========================
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim/Emacs
+*.swp
+*.swo
+*~
+\#*\#
+.#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===========================
+# Operating System Files
+# ===========================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+Icon
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================
+# Logs and Runtime Data
+# ===========================
+*.log
+logs/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ===========================
+# Database Files
+# ===========================
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+*.pgsql
+
+# Database specific
+*.mdf
+*.ldf
+*.ndf
+
+# ===========================
+# Docker
+# ===========================
+# Docker volumes and data
+postgres_data/
+sqlserver_data/
+docker-data/
+
+# Docker override files
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.dev.yml
+
+# ===========================
+# Security Files
+# ===========================
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# SSH keys
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.ppk
+
+# GPG keys
+*.asc
+*.gpg
+
+# ===========================
+# Temporary Files
+# ===========================
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# ===========================
+# Build Artifacts
+# ===========================
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# ===========================
+# Project Specific
+# ===========================
+# Test data
+test-data/
+sample-data/
+
+# Documentation builds
+docs/build/
+docs/_build/
+
+# Custom configuration
+config.local.json
+settings.local.json
+
+# Monitoring and profiling
+.profiling/
+monitoring/
+
+# Cache directories
+.cache/
+.parcel-cache/
