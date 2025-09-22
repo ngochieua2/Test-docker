@@ -9,7 +9,6 @@ const API_URL = 'http://localhost:8000'
 export default function Home() {
     const [apiStatus, setApiStatus] = useState<string>('checking...')
     const [postgresStatus, setPostgresStatus] = useState<string>('checking...')
-    const [sqlserverStatus, setSqlserverStatus] = useState<string>('checking...')
     const [sampleResponse, setSampleResponse] = useState<any>(null)
 
     useEffect(() => {
@@ -34,13 +33,6 @@ export default function Home() {
             setPostgresStatus('❌ Unhealthy')
         }
 
-        try {
-            // Check SQL Server health
-            await axios.get(`${API_URL}/health/sqlserver`)
-            setSqlserverStatus('✅ Healthy')
-        } catch (error) {
-            setSqlserverStatus('❌ Unhealthy')
-        }
     }
 
     const testSampleAPI = async () => {
@@ -63,7 +55,6 @@ export default function Home() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                     <div>API Backend: {apiStatus}</div>
                     <div>PostgreSQL: {postgresStatus}</div>
-                    <div>SQL Server: {sqlserverStatus}</div>
                 </div>
                 <button
                     onClick={checkHealthStatus}
@@ -105,9 +96,6 @@ export default function Home() {
                     </li>
                     <li style={{ padding: '5px 0', borderBottom: '1px solid #ddd' }}>
                         <strong>GET /health/postgres</strong> - PostgreSQL health check
-                    </li>
-                    <li style={{ padding: '5px 0', borderBottom: '1px solid #ddd' }}>
-                        <strong>GET /health/sqlserver</strong> - SQL Server health check
                     </li>
                     <li style={{ padding: '5px 0' }}>
                         <strong>GET /sample</strong> - Sample API that returns success message

@@ -22,15 +22,15 @@ app.add_middleware(
 
 # Database configurations
 POSTGRES_URL = os.getenv("POSTGRES_URL", "postgresql://postgres:postgres@postgresql:5432/postgres")
-SQLSERVER_URL = os.getenv("SQLSERVER_URL", "mssql+pyodbc://sa:YourStrong@Passw0rd@sqlserver:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes")
+# SQLSERVER_URL = os.getenv("SQLSERVER_URL", "mssql+pyodbc://sa:YourStrong@Passw0rd@sqlserver:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes")
 
 # Database engines for connection testing
 postgres_engine = create_engine(POSTGRES_URL)
-try:
-   sqlserver_engine = create_engine(SQLSERVER_URL)
-except Exception as e:
-   logger.warning(f"SQL Server connection failed: {e}")
-   sqlserver_engine = None
+# try:
+#    sqlserver_engine = create_engine(SQLSERVER_URL)
+# except Exception as e:
+#    logger.warning(f"SQL Server connection failed: {e}")
+#    sqlserver_engine = None
 
 # For now, set engines to None since database configs are commented
 # postgres_engine = None
@@ -51,17 +51,17 @@ async def postgres_health():
         logger.error(f"PostgreSQL health check failed: {e}")
         raise HTTPException(status_code=503, detail="PostgreSQL not available")
 
-@app.get("/health/sqlserver")
-async def sqlserver_health():
-    try:
-        if sqlserver_engine is None:
-            raise Exception("SQL Server engine not initialized")
-        with sqlserver_engine.connect() as connection:
-            result = connection.execute(text("SELECT 1"))
-            return {"status": "healthy", "database": "sqlserver"}
-    except Exception as e:
-        logger.error(f"SQL Server health check failed: {e}")
-        raise HTTPException(status_code=503, detail="SQL Server not available")
+# @app.get("/health/sqlserver")
+# async def sqlserver_health():
+#     try:
+#         if sqlserver_engine is None:
+#             raise Exception("SQL Server engine not initialized")
+#         with sqlserver_engine.connect() as connection:
+#             result = connection.execute(text("SELECT 1"))
+#             return {"status": "healthy", "database": "sqlserver"}
+#     except Exception as e:
+#         logger.error(f"SQL Server health check failed: {e}")
+#         raise HTTPException(status_code=503, detail="SQL Server not available")
 
 # API endpoints
 @app.get("/")
@@ -85,7 +85,6 @@ async def sample_endpoint():
         "timestamp": datetime.utcnow(),
         "data": {
             "postgres_connected": "available" if postgres_engine else "unavailable",
-            "sqlserver_connected": "available" if sqlserver_engine else "unavailable"
         }
     }
 
