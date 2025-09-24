@@ -93,6 +93,29 @@ def main():
     
     # Install requirements
     colored_print("📦 Installing requirements...", Colors.YELLOW)
+    
+    # First install main project requirements (shared dependencies)
+    main_requirements = os.path.join(script_dir, "requirements.txt")
+    if os.path.exists(main_requirements):
+        colored_print("  → Installing main project dependencies...", Colors.CYAN)
+        try:
+            if args.venv:
+                result = subprocess.run([venv_pip, "install", "-r", main_requirements], 
+                                      capture_output=True, text=True)
+            else:
+                result = subprocess.run([venv_python, "-m", "pip", "install", "-r", main_requirements], 
+                                      capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                colored_print("❌ Failed to install main requirements", Colors.RED)
+                colored_print(result.stderr, Colors.RED)
+                sys.exit(1)
+        except subprocess.CalledProcessError as e:
+            colored_print(f"❌ Failed to install main requirements: {e}", Colors.RED)
+            sys.exit(1)
+    
+    # Then install service-specific requirements
+    colored_print("  → Installing service-specific dependencies...", Colors.CYAN)
     try:
         if args.venv:
             result = subprocess.run([venv_pip, "install", "-r", "requirements.txt"], 
@@ -102,12 +125,12 @@ def main():
                                   capture_output=True, text=True)
         
         if result.returncode != 0:
-            colored_print("❌ Failed to install requirements", Colors.RED)
+            colored_print("❌ Failed to install service requirements", Colors.RED)
             colored_print(result.stderr, Colors.RED)
             sys.exit(1)
             
     except subprocess.CalledProcessError as e:
-        colored_print(f"❌ Failed to install requirements: {e}", Colors.RED)
+        colored_print(f"❌ Failed to install service requirements: {e}", Colors.RED)
         sys.exit(1)
     
     colored_print("✓ Requirements installed", Colors.GREEN)

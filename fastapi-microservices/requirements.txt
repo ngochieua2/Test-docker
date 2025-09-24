@@ -1,6 +1,8 @@
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.0
-pydantic>=2.5.0
+# Shared development and management tools
 alembic>=1.13.0
+
+# Development dependencies (add as needed)
+# pytest>=7.0.0
+# black>=22.0.0
+# flake8>=4.0.0
+# mypy>=0.900
