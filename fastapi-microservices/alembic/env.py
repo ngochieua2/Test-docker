@@ -22,8 +22,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from shared.database import Base
-from shared.models import Todo
+from shared.legacy.database import Base
+from shared.legacy.models import Todo
 
 target_metadata = Base.metadata
 

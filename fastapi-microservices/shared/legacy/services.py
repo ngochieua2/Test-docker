@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from shared.models import Todo
-from shared.schemas import TodoCreate, TodoUpdate
+from shared.legacy.models import Todo
+from shared.legacy.schemas import TodoCreate, TodoUpdate
 from typing import List, Optional
 
 class TodoService:
