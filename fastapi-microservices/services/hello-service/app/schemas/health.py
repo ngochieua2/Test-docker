@@ -14,7 +14,7 @@ class HealthResponse(BaseModel):
     system_metrics: Optional[Dict[str, Any]] = Field(None, description="System performance metrics")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "status": "healthy",
                 "service": "hello-service", 

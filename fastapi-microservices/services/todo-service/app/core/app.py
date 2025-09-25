@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.route import api_router
 
-def create_application() -> FastAPI:
+def create_application(lifespan=None) -> FastAPI:
     """
     Create and configure FastAPI application
     """
@@ -14,7 +14,8 @@ def create_application() -> FastAPI:
         debug=settings.DEBUG,
         docs_url="/docs" if settings.ENABLE_DOCS else None,
         redoc_url="/redoc" if settings.ENABLE_DOCS else None,
-        description="A comprehensive Todo service with CRUD operations, filtering, and statistics"
+        description="A comprehensive Todo service with CRUD operations, filtering, and statistics",
+        lifespan=lifespan,
     )
     
     # Add CORS middleware

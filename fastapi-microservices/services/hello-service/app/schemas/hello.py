@@ -9,7 +9,7 @@ class HelloRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100, description="Name to greet")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "World"
             }
@@ -25,7 +25,7 @@ class HelloResponse(BaseModel):
     language: Optional[str] = Field(None, description="Language used for greeting")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "message": "Hello, World!",
                 "timestamp": "2023-12-01T10:00:00Z",

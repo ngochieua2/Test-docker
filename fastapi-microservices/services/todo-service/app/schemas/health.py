@@ -16,7 +16,7 @@ class HealthResponse(BaseModel):
     database_response_time_ms: Optional[float] = Field(None, description="Database response time in milliseconds")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "status": "healthy",
                 "service": "todo-service",

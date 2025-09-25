@@ -27,7 +27,7 @@ class TodoCreate(TodoBase):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "title": "Learn FastAPI",
                 "description": "Complete the FastAPI tutorial and build a todo app",
@@ -56,7 +56,7 @@ class TodoUpdate(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "title": "Learn Advanced FastAPI",
                 "description": "Study advanced FastAPI concepts like dependency injection",
@@ -74,7 +74,7 @@ class TodoResponse(TodoBase):
     
     class Config:
         from_attributes = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 1,
                 "title": "Learn FastAPI",
@@ -96,7 +96,7 @@ class TodoStats(BaseModel):
     recent_todos: int = Field(..., description="Number of todos created today")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "total": 25,
                 "completed": 15,
