@@ -1,63 +1,44 @@
-from fastapi import FastAPI, HTTPException, Depends
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-from typing import List
-import sys
-import os
+import uvicorn
+from app.core.app import create_application
+from app.core.config import settings
+from app.utils.logger import setup_logging, get_logger
+from app.core.database import engine
+from app.models.todo import Todo
 
-# Add parent directory to path to access shared modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+# Setup logging
+setup_logging()
+logger = get_logger(__name__)
 
-from shared.database import get_db
-from shared.schemas import TodoResponse, TodoCreate, TodoUpdate
-from shared.services import TodoService
+# Create FastAPI application
+app = create_application()
 
-app = FastAPI(title="Todo Service", version="1.0.0")
+@app.on_event("startup")
+async def startup_event():
+    """
+    Application startup event
+    """
+    logger.info(f"Starting {settings.APP_NAME} v{settings.VERSION}")
+    logger.info(f"Debug mode: {settings.DEBUG}")
+    logger.info(f"Database URL: {settings.DATABASE_URL}")
+    logger.info(f"Docs available at: http://{settings.HOST}:{settings.PORT}/docs")
+    
+    # Create database tables (in production, use Alembic migrations)
+    Todo.metadata.create_all(bind=engine)
+    logger.info("Database tables created/verified")
 
-@app.get("/todos", response_model=List[TodoResponse])
-async def get_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Get all todos with pagination"""
-    todo_service = TodoService(db)
-    todos = todo_service.get_todos(skip=skip, limit=limit)
-    return todos
-
-@app.get("/todos/{todo_id}", response_model=TodoResponse)
-async def get_todo(todo_id: int, db: Session = Depends(get_db)):
-    """Get a specific todo by ID"""
-    todo_service = TodoService(db)
-    todo = todo_service.get_todo(todo_id)
-    if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return todo
-
-@app.post("/todos", response_model=TodoResponse, status_code=201)
-async def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
-    """Create a new todo"""
-    todo_service = TodoService(db)
-    return todo_service.create_todo(todo)
-
-@app.put("/todos/{todo_id}", response_model=TodoResponse)
-async def update_todo(todo_id: int, todo_update: TodoUpdate, db: Session = Depends(get_db)):
-    """Update an existing todo"""
-    todo_service = TodoService(db)
-    updated_todo = todo_service.update_todo(todo_id, todo_update)
-    if not updated_todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return updated_todo
-
-@app.delete("/todos/{todo_id}")
-async def delete_todo(todo_id: int, db: Session = Depends(get_db)):
-    """Delete a todo"""
-    todo_service = TodoService(db)
-    success = todo_service.delete_todo(todo_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return JSONResponse(content={"message": "Todo deleted successfully"})
-
-@app.get("/health")
-async def health():
-    return {"status": "healthy", "service": "todo-service"}
+@app.on_event("shutdown")
+async def shutdown_event():
+    """
+    Application shutdown event
+    """
+    logger.info(f"Shutting down {settings.APP_NAME}")
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    logger.info(f"Starting server on {settings.HOST}:{settings.PORT}")
+    uvicorn.run(
+        "main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.DEBUG,
+        log_level=settings.LOG_LEVEL.lower()
+    )
