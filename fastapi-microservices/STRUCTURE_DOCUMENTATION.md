@@ -21,7 +21,7 @@ fastapi-microservices/
 │   └── 📁 versions/                 # Database migration versions
 ├── 📁 services/                     # Individual microservices
 │   ├── 📁 hello-service/            # Simple greeting microservice
-│   │   ├── 📄 .env.example          # Environment variables template
+│   │   ├── 📄 .env                  # Environment variables template
 │   │   ├── 🐍 __init__.py           # Package initialization
 │   │   ├── 🐍 main.py               # Service entry point
 │   │   ├── 📄 requirements.txt      # Service-specific dependencies
@@ -31,6 +31,7 @@ fastapi-microservices/
 │   │   │   ├── 📁 api/              # API endpoints and routes
 │   │   │   ├── 📁 core/             # Core application components
 │   │   │   ├── 📁 models/           # Data models and schemas
+│       │   ├── 📁 repositories/     # Data access layer
 │   │   │   ├── 📁 schemas/          # Pydantic schemas
 │   │   │   ├── 📁 services/         # Business logic layer
 │   │   │   └── 📁 utils/            # Service-specific utilities
@@ -41,10 +42,9 @@ fastapi-microservices/
 │   │   │   └── 📁 api/              # API endpoint tests
 │   │   └── 📁 __pycache__/          # Python bytecode cache
 │   └── 📁 todo-service/             # CRUD todo management microservice
-│       ├── 📄 .env.example          # Environment variables template
+│       ├── 📄 .env                  # Environment variables template
 │       ├── 🐍 __init__.py           # Package initialization
 │       ├── 🐍 main.py               # Service entry point
-│       ├── 🐍 main_old.py           # Legacy/backup main file
 │       ├── 📄 requirements.txt      # Service-specific dependencies
 │       ├── 📄 SERVICE_README.md     # Service documentation
 │       ├── 📁 app/                  # Application structure
@@ -126,7 +126,7 @@ A lightweight microservice demonstrating basic FastAPI functionality:
 | Component | Purpose |
 |-----------|---------|
 | `main.py` | Service entry point with application lifespan management and server configuration |
-| `.env.example` | Template for environment variables configuration |
+| `.env`    | Template for environment variables configuration |
 | `requirements.txt` | Service-specific dependencies if different from main project |
 | `SERVICE_README.md` | Detailed service documentation with API endpoints and usage examples |
 | `app/api/` | REST API endpoints and route definitions |
@@ -143,8 +143,7 @@ A full CRUD microservice for todo management:
 | Component | Purpose |
 |-----------|---------|
 | `main.py` | Service entry point with database table creation and application lifecycle |
-| `main_old.py` | Legacy/backup version of the main file for reference |
-| `.env.example` | Template for environment variables configuration |
+| `.env`    | Template for environment variables configuration |
 | `requirements.txt` | Service-specific dependencies including database drivers |
 | `SERVICE_README.md` | Comprehensive service documentation with API specifications |
 | `app/api/` | REST API endpoints for todo CRUD operations |
