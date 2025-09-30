@@ -1,0 +1,58 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+data_cooking_venv/
+
+# Environment variables
+app/.env
+
+# IDE / Editor folders
+.vscode/
+.idea/
+
+# macOS / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs and debug info
+*.log
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+.cache
+.pytest_cache/
+
+# Uvicorn / Gunicorn / FastAPI-related
+*.pid
+*.db
+
+# MyPy / Pyright / Pylint / Bandit
+.mypy_cache/
+.pyright/
+.pylint.d/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Others
+*.sqlite3
+*.bak
+
+#mock
+app/mock/mock_chat_service.py

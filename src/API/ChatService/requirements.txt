@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+python-dotenv
+openai
+redis[hiredis]
+alembic
+pydantic-settings
+asyncpg
+psycopg[binary]
+pydantic[email]
+openpyxl
+pandas
+python-multipart
+confluent-kafka

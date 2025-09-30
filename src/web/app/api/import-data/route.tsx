@@ -24,7 +24,7 @@ interface ExternalApiResponse {
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:5002";
-const EXTERNAL_API_ENDPOINT = "/api/v1/import-data";
+const EXTERNAL_API_ENDPOINT = "/api/v1/chats/import-data";
 const QUERY_PARAMS = new URLSearchParams({
   distributions_format: "list",
   save_profile_json: "false",
