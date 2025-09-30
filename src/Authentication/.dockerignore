@@ -1,0 +1,36 @@
+# .NET specific
+bin/
+obj/
+out/
+*.user
+*.suo
+*.cache
+*.tmp
+
+# IDE files
+.vs/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Documentation
+README.md
+*.md
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore

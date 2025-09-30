@@ -1,0 +1,188 @@
+version: '1.0'
+
+services:
+  
+  # Nginx Reverse Proxy
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx_proxy
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/conf.d:/etc/nginx/conf.d
+  #     - ./nginx/ssl:/etc/nginx/ssl:ro
+  #   depends_on:
+  #     - app_chat
+  #     - main-api-service
+  #     - authserver
+  #   networks:
+  #     - proxy
+  #     - datacooking-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: datacooking-sqlserver
+    restart: unless-stopped
+    environment:
+      SA_PASSWORD: "Aa123456789"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - sqlserver-net
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Aa123456789", "-C", "-Q", "SELECT 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Authentication Server
+  authserver:
+    build:
+      context: ./src/Authentication
+      dockerfile: Oauth2.DockerFile
+    container_name: datacooking-oauth2
+    restart: unless-stopped
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AuthServer;User=sa;Password=Aa123456789;TrustServerCertificate=true;
+      - Authentication__Schemes__Bearer__ValidAudiences__0=http://main-api-service:8001
+      - Authentication__Schemes__Bearer__ValidIssuer=data-cooking-api
+      - Authentication__Schemes__Bearer__SigningSecurityKey=yY~/O<W2adXB:,&rK]ruq+Bt0+yjjwYg&IVZW{]Feti)IdV@KS,?+vBo%on[IFb
+      - Authentication__Schemes__Bearer__AccessTokenExpiries=30
+      - Authentication__Schemes__Bearer__RefreshTokenExpiries=30
+      - MailService__Email=datacookingemail@gmail.com
+      - MailService__Name=DataCooking.ai
+      # - MailService__Brevo__ApiKey=
+      - MailService__Brevo__Host=https://api.brevo.com
+    ports:
+      - "8002:80"
+    volumes:
+      - dataprotection-keys:/root/.aspnet/DataProtection-Keys
+    networks:
+      - proxy
+      - sqlserver-net
+      - datacooking-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16
+    container_name: datacooking-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: DataCooking
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - datacooking-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d DataCooking"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Main Microservice
+  main-api-service:
+    build:
+      context: ./src/Microservice
+      dockerfile: services/main-service/Dockerfile
+    container_name: datacooking-main-api-service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/DataCooking
+      HOST: 0.0.0.0
+      PORT: 8001
+      DEBUG: "false"
+      LOG_LEVEL: INFO
+      ENABLE_DOCS: "true"
+      BACKEND_CORS_ORIGINS: '["http://localhost:3000", "http://localhost:8002"]'
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - datacooking-network
+    volumes:
+      - ./src/Microservice:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Next.js Web Application
+  app_chat:
+    build:
+      context: ./src/web
+      dockerfile: dockerfile.Dockerfile
+    container_name: datacooking-web-chat
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: http://main-api-service:8001
+      NEXT_PUBLIC_AUTH_URL: http://localhost:8002
+      NEXTAUTH_SECRET: your-nextauth-secret-here
+      NEXTAUTH_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - main-api-service
+      - authserver
+    networks:
+      - datacooking-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  datacooking-network:
+    driver: bridge
+    name: datacooking-network
+  proxy:
+    driver: bridge
+    name: proxy-network
+  sqlserver-net:
+    driver: bridge
+    name: sqlserver-network
+
+volumes:
+  postgres_data:
+    driver: local
+    name: datacooking-postgres-data
+  sql_data:
+    driver: local
+    name: datacooking-sql-data
+  dataprotection-keys:
+    driver: local
+    name: datacooking-dataprotection-keys

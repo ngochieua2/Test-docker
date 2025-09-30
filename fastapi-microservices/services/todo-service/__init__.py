@@ -1,1 +1,0 @@
-# Todo Service - FastAPI microservice with full CRUD operations
