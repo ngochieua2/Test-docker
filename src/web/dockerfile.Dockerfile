@@ -25,7 +25,9 @@ RUN adduser --system --uid 1001 nextjs
 # Copy only the necessary files from the builder stage
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+
+# Create public directory (Next.js might not have one with app router)
+RUN mkdir -p ./public
 
 USER nextjs
 EXPOSE 3000
