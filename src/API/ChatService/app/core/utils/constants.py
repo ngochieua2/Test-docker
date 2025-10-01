@@ -1,1 +1,0 @@
-VALID_FILE_TYPES = ['.csv', '.xlsx', '.xls']
